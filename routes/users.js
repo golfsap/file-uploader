@@ -10,6 +10,8 @@ const usersRouter = Router();
 
 usersRouter.post("/signup", signupValidator, userController.signup);
 
+usersRouter.post("/login", userController.login);
+
 /**
  * -------------- GET ROUTES ----------------
  */
@@ -17,5 +19,7 @@ usersRouter.post("/signup", signupValidator, userController.signup);
 usersRouter.get("/signup", userController.showSignupForm);
 
 usersRouter.get("/login", userController.showLoginForm);
+
+usersRouter.get("/logout", userController.logout);
 
 module.exports = usersRouter;

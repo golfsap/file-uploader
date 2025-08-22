@@ -51,6 +51,11 @@ initializePassport(passport);
 
 app.use(passport.session());
 
+app.use((req, res, next) => {
+  res.locals.currentUser = req.user;
+  next();
+});
+
 if (process.env.NODE_ENV !== "production") {
   app.use((req, res, next) => {
     console.log("Session ID:", req.sessionID);

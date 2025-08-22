@@ -1,0 +1,11 @@
+<nav>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <% if (currentUser) { %>
+    <a href="/logout">Log out</a>
+    <% } else { %>
+    <a href="/login">Log in</a>
+    <a href="/signup">Sign up</a>
+    <% } %>
+  </div>
+</nav>
