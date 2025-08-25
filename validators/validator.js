@@ -12,3 +12,8 @@ exports.signupValidator = [
     return true;
   }),
 ];
+
+exports.loginValidator = [
+  body("email").trim().notEmpty().withMessage("Email is required"),
+  body("password").notEmpty().withMessage("Password is required"),
+];

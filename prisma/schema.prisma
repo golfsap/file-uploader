@@ -15,9 +15,32 @@ datasource db {
 }
 
 model User {
-  id           Int    @id @default(autoincrement())
-  email        String @unique
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
   passwordHash String
+  folders      Folder[]
+  files        File[]
+}
+
+model Folder {
+  id        Int      @id @default(autoincrement())
+  name      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  files     File[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model File {
+  id        Int      @id @default(autoincrement())
+  name      String
+  path      String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  Folder    Folder?  @relation(fields: [folderId], references: [id])
+  folderId  Int?
+  createdAt DateTime @default(now())
 }
 
 model Session {
