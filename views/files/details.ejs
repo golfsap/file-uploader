@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= file.name %> Details</title>
+  </head>
+  <body>
+    <%- include('../partials/navbar') %>
+    <h1>File Details</h1>
+    <p><strong>Name:</strong> <%= file.name %></p>
+    <p><strong>Size:</strong> <%= (file.size / 1024).toFixed(2) %> KB</p>
+    <p><strong>Type:</strong> <%= file.mimetype %></p>
+    <p><strong>Uploaded at: </strong><%= file.createdAt.toLocaleString() %></p>
+
+    <a href="/files/<%= file.id %>/download">Download</a> |
+    <a href="/folders/<%= file.folderId %>">Back to Folder</a>
+  </body>
+</html>

@@ -42,3 +42,32 @@ exports.viewFolder = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
+
+exports.renameFolder = async (req, res) => {
+  const { newName } = req.body;
+
+  try {
+    const updated = await prisma.folder.updateMany({
+      where: { id: parseInt(req.params.id, 10), userId: req.user.id },
+      data: { name: newName },
+    });
+    res.redirect("/folders");
+  } catch (err) {
+    console.error("Error renaming folder:", err);
+    res.status(500).send("Server error");
+  }
+};
+
+exports.deleteFolder = async (req, res) => {
+  const folderId = parseInt(req.params.id, 10);
+
+  try {
+    await prisma.folder.deleteMany({
+      where: { id: folderId, userId: req.user.id },
+    });
+    res.redirect("/folders");
+  } catch (err) {
+    console.error("Error deleting folder:", err);
+    res.status(500).send("Server error");
+  }
+};

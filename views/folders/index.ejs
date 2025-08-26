@@ -16,7 +16,24 @@
 
     <ul>
       <% folders.forEach(folder => { %>
-      <li><a href="/folders/<%= folder.id %>"><%= folder.name %></a></li>
+      <li>
+        <a href="/folders/<%= folder.id %>"><%= folder.name %></a>
+        <form
+          action="/folders/<%= folder.id %>/rename"
+          method="post"
+          style="display: inline"
+        >
+          <input type="text" name="newName" placeholder="Rename" />
+          <button type="submit">Rename</button>
+        </form>
+        <form
+          action="/folders/<%= folder.id %>/delete"
+          method="post"
+          style="display: inline"
+        >
+          <button type="submit">Delete</button>
+        </form>
+      </li>
       <% }) %>
     </ul>
   </body>

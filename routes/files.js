@@ -10,13 +10,6 @@ const fileRouter = Router();
  * -------------- POST ROUTES ----------------
  */
 
-// fileRouter.post(
-//   "/upload",
-//   isAuth,
-//   upload.single("file"),
-//   fileController.uploadFile
-// );
-
 fileRouter.post(
   "/files/upload/:folderId",
   isAuth,
@@ -30,6 +23,8 @@ fileRouter.post("/files/:id/delete", isAuth, fileController.deleteFile);
  * -------------- GET ROUTES ----------------
  */
 
-// fileRouter.get("/upload", isAuth, fileController.showUploadForm);
+fileRouter.get("/files/:id", isAuth, fileController.getFileDetails);
+
+fileRouter.get("/files/:id/download", isAuth, fileController.downloadFile);
 
 module.exports = fileRouter;

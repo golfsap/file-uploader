@@ -10,6 +10,10 @@ const folderRouter = Router();
 
 folderRouter.post("/folders", isAuth, folderController.createFolder);
 
+folderRouter.post("/folders/:id/rename", isAuth, folderController.renameFolder);
+
+folderRouter.post("/folders/:id/delete", isAuth, folderController.deleteFolder);
+
 /**
  * -------------- GET ROUTES ----------------
  */
