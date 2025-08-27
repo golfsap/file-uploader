@@ -1,16 +1,32 @@
 const prisma = require("../db/client");
-const path = require("path");
+// const path = require("path");
+const supabase = require("../config/supabase");
 
 exports.uploadFileToFolder = async (req, res) => {
   const folderId = parseInt(req.params.folderId, 10);
+  const file = req.file;
 
   try {
-    const file = await prisma.file.create({
+    const fileName = `${Date.now()}-${file.originalname}`;
+    const filePath = `${req.user.id}/${folderId}/${fileName}`;
+
+    // upload to Supabase storage bucket
+    const { error } = await supabase.storage
+      .from("files")
+      .upload(filePath, file.buffer, {
+        contentType: file.mimetype,
+        upsert: false,
+      });
+
+    if (error) throw error;
+
+    // save to DB
+    const savedFile = await prisma.file.create({
       data: {
-        name: req.file.originalname,
-        path: req.file.path,
-        size: req.file.size,
-        mimetype: req.file.mimetype,
+        name: file.originalname,
+        path: filePath,
+        size: file.size,
+        mimetype: file.mimetype,
         folderId,
       },
     });
@@ -26,8 +42,31 @@ exports.deleteFile = async (req, res) => {
   const folderId = parseInt(req.body.folderId, 10);
 
   try {
-    await prisma.file.deleteMany({
-      where: { id: fileId, folderId },
+    // find file in DB
+    const file = await prisma.file.findUnique({
+      where: {
+        id: fileId,
+      },
+      include: {
+        folder: true,
+      },
+    });
+    if (!file) {
+      return res.status(404).json({ error: "File not found" });
+    }
+
+    if (file.folder.userId !== req.user.id) {
+      return res.status(403).send("Not authorized to delete this file");
+    }
+
+    // delete from supabase storage bucket
+    const { error } = await supabase.storage.from("files").remove([file.path]);
+
+    if (error) throw error;
+
+    // delete from DB
+    await prisma.file.delete({
+      where: { id: fileId },
     });
     res.redirect(`/folders/${folderId}`);
   } catch (err) {
@@ -74,10 +113,17 @@ exports.downloadFile = async (req, res) => {
     }
 
     if (file.folder.userId !== req.user.id) {
-      return res.status(403).send("Not authorized");
+      return res.status(403).send("Not authorized to download this file");
     }
 
-    res.download(path.resolve(file.path), file.name);
+    // Create a signed URL valid for 60s
+    const { data, error } = await supabase.storage
+      .from("files")
+      .createSignedUrl(file.path, 60);
+
+    if (error) throw error;
+
+    res.redirect(data.signedUrl);
   } catch (err) {
     console.error("Error downloading file:", err);
     res.status(500).send("Server error");
