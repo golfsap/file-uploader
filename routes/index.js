@@ -5,7 +5,7 @@ const folderRoutes = require("./folders");
 
 const indexRouter = Router();
 
-indexRouter.get("/", (req, res) => res.render("index"));
+indexRouter.get("/", (req, res) => res.render("index", { title: "Homepage" }));
 
 indexRouter.use("/", authRoutes);
 indexRouter.use("/", fileRoutes);

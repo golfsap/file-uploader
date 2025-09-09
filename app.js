@@ -4,6 +4,7 @@ const routes = require("./routes");
 const session = require("express-session");
 const passport = require("passport");
 const { PrismaSessionStore } = require("@quixo3/prisma-session-store");
+const expressLayouts = require("express-ejs-layouts");
 
 /**
  * -------------- GENERAL SETUP ----------------
@@ -13,8 +14,14 @@ require("dotenv").config();
 
 const app = express();
 
+// set up EJS
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
+// enable layouts
+app.use(expressLayouts);
+// set default layout (relative to views folder, no ".ejs")
+app.set("layout", "partials/layout");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -41,6 +48,16 @@ app.use(
     }),
   })
 );
+
+// app.use((req, res, next) => {
+//   if (req.session) {
+//     console.log(
+//       "Session expires at:",
+//       new Date(Date.now() + req.session.cookie.maxAge).toLocaleString()
+//     );
+//   }
+//   next();
+// });
 
 /**
  * -------------- PASSPORT AUTHENTICATION ----------------

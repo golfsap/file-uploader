@@ -5,7 +5,7 @@ const prisma = require("../db/client");
 const { Prisma } = require("../generated/prisma");
 
 exports.showSignupForm = (req, res) => {
-  res.render("signup");
+  res.render("signup", { title: "Signup" });
 };
 
 exports.signup = async (req, res) => {
@@ -40,7 +40,7 @@ exports.signup = async (req, res) => {
 };
 
 exports.showLoginForm = (req, res) => {
-  res.render("login");
+  res.render("login", { title: "Login" });
 };
 
 exports.login = (req, res, next) => {

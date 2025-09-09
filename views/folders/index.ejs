@@ -1,40 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Your Folders</title>
-  </head>
-  <body>
-    <%- include('../partials/navbar') %>
-    <h1>Your Folders</h1>
+<h1>Your Folders</h1>
+<p><button onclick="createFolder()">Add folder</button></p>
+<!-- <form action="/folders" method="post">
+  <input type="text" name="name" placeholder="New folder name" required />
+  <button type="submit">Create Folder</button>
+</form> -->
 
-    <form action="/folders" method="post">
-      <input type="text" name="name" placeholder="New folder name" required />
-      <button type="submit">Create Folder</button>
-    </form>
-
-    <ul>
-      <% folders.forEach(folder => { %>
-      <li>
-        <a href="/folders/<%= folder.id %>"><%= folder.name %></a>
-        <form
-          action="/folders/<%= folder.id %>/rename"
-          method="post"
-          style="display: inline"
-        >
-          <input type="text" name="newName" placeholder="Rename" />
-          <button type="submit">Rename</button>
-        </form>
-        <form
-          action="/folders/<%= folder.id %>/delete"
-          method="post"
-          style="display: inline"
-        >
-          <button type="submit">Delete</button>
-        </form>
-      </li>
-      <% }) %>
-    </ul>
-  </body>
-</html>
+<ul>
+  <% folders.forEach(folder => { %>
+  <li id="folder-<%= folder.id %>">
+    <a href="/folders/<%= folder.id %>"><%= folder.name %></a>
+    <button onclick="renameFolder(<%= folder.id %>, '<%= folder.name %>')">
+      Rename
+    </button>
+    <button onclick="deleteFolder(<%= folder.id %>)">Delete</button>
+  </li>
+  <% }) %>
+</ul>
