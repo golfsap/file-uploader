@@ -17,14 +17,17 @@
   <% files.forEach(file => { %>
   <li>
     <a href="/files/<%= file.id %>"><%= file.name %></a>
-    <form
+    <button onclick="deleteFile(<%= file.id %>, <%= folder.id %>)">
+      Delete
+    </button>
+    <!-- <form
       action="/files/<%= file.id %>/delete"
       method="post"
       style="display: inline"
     >
       <input type="hidden" name="folderId" value="<%= folder.id %>" />
       <button type="submit">Delete</button>
-    </form>
+    </form> -->
   </li>
   <% }) %>
 </ul>

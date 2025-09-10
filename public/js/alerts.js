@@ -37,7 +37,7 @@ async function deleteFolder(folderId) {
   });
 
   if (result.isConfirmed) {
-    const res = await fetch(`folders/${folderId}/delete`, {
+    const res = await fetch(`/folders/${folderId}/delete`, {
       method: "POST",
     });
 
@@ -79,6 +79,31 @@ async function createFolder(userId) {
       location.reload();
     } else {
       Swal.fire("Error", "Could not create folder", "error");
+    }
+  }
+}
+
+async function deleteFile(fileId, folderId) {
+  const result = await Swal.fire({
+    title: "Are you sure?",
+    text: "This will permanantly delete the file.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Delete",
+  });
+
+  if (result.isConfirmed) {
+    const res = await fetch(`/files/${fileId}/delete`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ folderId }),
+    });
+
+    if (res.ok) {
+      await Swal.fire("Deleted!", "File successfully deleted", "success");
+      location.reload();
+    } else {
+      await Swal.fire("Error", "Could not delete file.", "error");
     }
   }
 }

@@ -68,7 +68,7 @@ exports.deleteFile = async (req, res) => {
     await prisma.file.delete({
       where: { id: fileId },
     });
-    res.redirect(`/folders/${folderId}`);
+    res.status(200).json({ success: true });
   } catch (err) {
     console.error("Error deleting file:", err);
     res.status(500).send("Server error");
@@ -92,7 +92,7 @@ exports.getFileDetails = async (req, res) => {
       return res.status(403).send("Not authorized");
     }
 
-    res.render("files/details", { file });
+    res.render("files/details", { title: "Details", file });
   } catch (err) {
     console.error("Error fetching file details:", err);
     res.status(500).send("Server error");
