@@ -1,0 +1,19 @@
+<h1>Recent Files</h1>
+
+<% if (recentFiles.length === 0) { %>
+<p>No recent files found.</p>
+<% } else { %>
+<ul>
+  <% recentFiles.forEach(file => { %>
+  <li>
+    <a href="/files/<%= file.id %>"><%= file.name %></a>
+
+    <span class="file-meta"><%= file.createdAt.toLocaleString() %></span>
+
+    <a href="/folders/<%= file.folder?.id %>">
+      <span class="file-meta"> <%= file.folder?.name || 'No folder' %> </span>
+    </a>
+  </li>
+  <% }) %>
+</ul>
+<% } %>

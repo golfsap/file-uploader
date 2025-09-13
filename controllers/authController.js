@@ -5,7 +5,7 @@ const prisma = require("../db/client");
 const { Prisma } = require("../generated/prisma");
 
 exports.showSignupForm = (req, res) => {
-  res.render("signup", { title: "Signup" });
+  res.render("signup", { title: "Signup", formData: {} });
 };
 
 exports.signup = async (req, res) => {
@@ -14,7 +14,9 @@ exports.signup = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.render("signup", {
+      title: "Signup",
       errors: errors.array().map((e) => e.msg),
+      formData: { email },
     });
   }
 
@@ -24,15 +26,21 @@ exports.signup = async (req, res) => {
 
     if (!user) {
       return res.render("signup", {
+        title: "Signup",
         errors: ["Could not register user"],
+        formData: { email },
       });
     }
 
-    res.redirect("/login");
+    res.redirect("/login", { title: "Login" });
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       if (err.code === "P2002") {
-        return res.render("signup", { errors: ["Email already registered"] });
+        return res.render("signup", {
+          title: "Signup",
+          errors: ["Email already registered"],
+          formData: { email },
+        });
       }
     }
     console.error("Signup error:", err);
@@ -40,7 +48,7 @@ exports.signup = async (req, res) => {
 };
 
 exports.showLoginForm = (req, res) => {
-  res.render("login", { title: "Login" });
+  res.render("login", { title: "Login", formData: {} });
 };
 
 exports.login = (req, res, next) => {
@@ -50,7 +58,8 @@ exports.login = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.render("login", {
       errors: errors.array().map((e) => e.msg),
-      // formData: { email },
+      title: "Login",
+      formData: { email },
     });
   }
 
@@ -60,7 +69,11 @@ exports.login = (req, res, next) => {
       return next(err);
     }
     if (!user) {
-      return res.render("login", { errors: [info.message] });
+      return res.render("login", {
+        errors: [info.message],
+        title: "Login",
+        formData: { email },
+      });
     }
     req.logIn(user, (err) => {
       if (err) {

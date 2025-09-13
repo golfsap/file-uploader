@@ -22,4 +22,10 @@ folderRouter.get("/folders", isAuth, folderController.getUserFolders);
 
 folderRouter.get("/folders/:id", isAuth, folderController.viewFolder);
 
+// folderRouter.get(
+//   "/folders/*folderPath",
+//   isAuth,
+//   folderController.viewNestedFolder
+// );
+
 module.exports = folderRouter;

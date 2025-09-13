@@ -49,16 +49,6 @@ app.use(
   })
 );
 
-// app.use((req, res, next) => {
-//   if (req.session) {
-//     console.log(
-//       "Session expires at:",
-//       new Date(Date.now() + req.session.cookie.maxAge).toLocaleString()
-//     );
-//   }
-//   next();
-// });
-
 /**
  * -------------- PASSPORT AUTHENTICATION ----------------
  */
@@ -73,13 +63,13 @@ app.use((req, res, next) => {
   next();
 });
 
-if (process.env.NODE_ENV !== "production") {
-  app.use((req, res, next) => {
-    console.log("Session ID:", req.sessionID);
-    console.log("Current user:", req.user);
-    next();
-  });
-}
+// if (process.env.NODE_ENV !== "production") {
+//   app.use((req, res, next) => {
+//     console.log("Session ID:", req.sessionID);
+//     console.log("Current user:", req.user);
+//     next();
+//   });
+// }
 
 /**
  * -------------- ROUTES ----------------

@@ -23,6 +23,8 @@ fileRouter.post("/files/:id/delete", isAuth, fileController.deleteFile);
  * -------------- GET ROUTES ----------------
  */
 
+fileRouter.get("/files/recent", isAuth, fileController.getRecentFiles);
+
 fileRouter.get("/files/:id", isAuth, fileController.getFileDetails);
 
 fileRouter.get("/files/:id/download", isAuth, fileController.downloadFile);

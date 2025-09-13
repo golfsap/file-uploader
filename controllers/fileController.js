@@ -1,6 +1,7 @@
 const prisma = require("../db/client");
 // const path = require("path");
 const supabase = require("../config/supabase");
+const { Prisma } = require("@prisma/client");
 
 exports.uploadFileToFolder = async (req, res) => {
   const folderId = parseInt(req.params.folderId, 10);
@@ -126,6 +127,28 @@ exports.downloadFile = async (req, res) => {
     res.redirect(data.signedUrl);
   } catch (err) {
     console.error("Error downloading file:", err);
+    res.status(500).send("Server error");
+  }
+};
+
+exports.getRecentFiles = async (req, res) => {
+  try {
+    const recentFiles = await prisma.file.findMany({
+      where: {
+        folder: {
+          userId: req.user.id,
+        },
+      },
+      orderBy: { createdAt: "desc" },
+      take: 10,
+      include: {
+        folder: true,
+      },
+    });
+
+    res.render("files/recent", { title: "Recent Files", recentFiles });
+  } catch (err) {
+    console.error("Error retrieving recent files:", err);
     res.status(500).send("Server error");
   }
 };

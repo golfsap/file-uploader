@@ -1,8 +1,10 @@
 <h1>File Details</h1>
-<p><strong>Name:</strong> <%= file.name %></p>
-<p><strong>Size:</strong> <%= (file.size / 1024).toFixed(2) %> KB</p>
-<p><strong>Type:</strong> <%= file.mimetype %></p>
-<p><strong>Uploaded at: </strong><%= file.createdAt.toLocaleString() %></p>
+<div class="file-details">
+  <p><strong>Name:</strong> <%= file.name %></p>
+  <p><strong>Size:</strong> <%= (file.size / 1024).toFixed(2) %> KB</p>
+  <p><strong>Type:</strong> <%= file.mimetype %></p>
+  <p><strong>Uploaded at: </strong><%= file.createdAt.toLocaleString() %></p>
+</div>
 
-<a href="/files/<%= file.id %>/download">Download</a> |
+<a id="download-button" href="/files/<%= file.id %>/download">Download</a>
 <a href="/folders/<%= file.folderId %>">Back to Folder</a>

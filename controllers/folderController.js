@@ -1,11 +1,25 @@
 const prisma = require("../db/client");
 
+exports.getHomePage = async (req, res) => {
+  if (!req.user) {
+    return res.render("index", {
+      title: "Homepage",
+      layout: "partials/home-layout",
+    });
+  }
+  res.redirect("/folders");
+};
+
 exports.createFolder = async (req, res) => {
-  const { name } = req.body;
+  const { name, parentId } = req.body;
 
   try {
     const folder = await prisma.folder.create({
-      data: { name, userId: req.user.id },
+      data: {
+        name,
+        userId: req.user.id,
+        parentId: parentId ? parseInt(parentId, 10) : null,
+      },
     });
     res.status(200).json({ success: true });
   } catch (err) {

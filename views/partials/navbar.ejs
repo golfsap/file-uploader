@@ -1,10 +1,11 @@
 <nav>
   <div class="nav-links">
-    <a href="/">Home</a>
     <% if (currentUser) { %>
     <a href="/folders">My folders</a>
+    <a href="/files/recent">Recent files</a>
     <a href="/logout">Log out</a>
     <% } else { %>
+    <a href="/">Home</a>
     <a href="/login">Log in</a>
     <a href="/signup">Sign up</a>
     <% } %>

@@ -1,6 +1,4 @@
-<h1><%= folder.name %></h1>
-
-<a href="/folders">< Back to folders</a>
+<h1>/<%= folder.name %></h1>
 
 <h2>Upload a file</h2>
 <form
@@ -17,17 +15,13 @@
   <% files.forEach(file => { %>
   <li>
     <a href="/files/<%= file.id %>"><%= file.name %></a>
-    <button onclick="deleteFile(<%= file.id %>, <%= folder.id %>)">
+    <button
+      class="delete-btn"
+      onclick="deleteFile(<%= file.id %>, <%= folder.id %>)"
+    >
       Delete
     </button>
-    <!-- <form
-      action="/files/<%= file.id %>/delete"
-      method="post"
-      style="display: inline"
-    >
-      <input type="hidden" name="folderId" value="<%= folder.id %>" />
-      <button type="submit">Delete</button>
-    </form> -->
   </li>
   <% }) %>
 </ul>
+<a href="/folders">Back to all folders</a>

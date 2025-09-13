@@ -1,14 +1,21 @@
 <h1>Your Folders</h1>
-<p><button onclick="createFolder()">Add folder</button></p>
+<p><button class="add-btn" onclick="createFolder()">Add Folder</button></p>
 
-<ul>
+<ul class="items-list">
   <% folders.forEach(folder => { %>
   <li id="folder-<%= folder.id %>">
     <a href="/folders/<%= folder.id %>"><%= folder.name %></a>
-    <button onclick="renameFolder(<%= folder.id %>, '<%= folder.name %>')">
-      Rename
-    </button>
-    <button onclick="deleteFolder(<%= folder.id %>)">Delete</button>
+    <div class="button-group">
+      <button
+        class="rename-btn"
+        onclick="renameFolder(<%= folder.id %>, '<%= folder.name %>')"
+      >
+        rename
+      </button>
+      <button class="delete-btn" onclick="deleteFolder(<%= folder.id %>)">
+        delete
+      </button>
+    </div>
   </li>
   <% }) %>
 </ul>
