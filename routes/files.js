@@ -2,7 +2,7 @@ const { Router } = require("express");
 const fileController = require("../controllers/fileController");
 const { isAuth } = require("../middleware/authMiddleware");
 const upload = require("../middleware/uploadMiddleware");
-const { file } = require("../db/client");
+// const { file } = require("../db/client");
 
 const fileRouter = Router();
 
@@ -13,7 +13,20 @@ const fileRouter = Router();
 fileRouter.post(
   "/files/upload/:folderId",
   isAuth,
-  upload.single("file"),
+  async (req, res, next) => {
+    try {
+      await new Promise((resolve, reject) => {
+        upload.single("file")(req, res, (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
+      next();
+    } catch (err) {
+      console.error("Caught upload error:", err.message);
+      return res.status(400).json({ error: err.message });
+    }
+  },
   fileController.uploadFileToFolder
 );
 

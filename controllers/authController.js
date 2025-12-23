@@ -32,7 +32,7 @@ exports.signup = async (req, res) => {
       });
     }
 
-    res.redirect("/login", { title: "Login" });
+    res.redirect("/login");
   } catch (err) {
     if (err instanceof Prisma.PrismaClientKnownRequestError) {
       if (err.code === "P2002") {

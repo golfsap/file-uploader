@@ -8,7 +8,12 @@ exports.uploadFileToFolder = async (req, res) => {
   const file = req.file;
 
   try {
-    const fileName = `${Date.now()}-${file.originalname}`;
+    // Sanitize the filename - remove special characters and spaces
+    const sanitizedName = file.originalname
+      .replace(/[^a-zA-Z0-9.-]/g, "_") // Replace special chars with underscore
+      .replace(/\s+/g, "_"); // Replace spaces with underscore
+
+    const fileName = `${Date.now()}-${sanitizedName}`;
     const filePath = `${req.user.id}/${folderId}/${fileName}`;
 
     // upload to Supabase storage bucket
@@ -24,13 +29,14 @@ exports.uploadFileToFolder = async (req, res) => {
     // save to DB
     const savedFile = await prisma.file.create({
       data: {
-        name: file.originalname,
+        name: file.originalname, // Kepp original name in DB
         path: filePath,
         size: file.size,
         mimetype: file.mimetype,
         folderId,
       },
     });
+
     res.redirect(`/folders/${folderId}`);
   } catch (err) {
     console.error("Error creating file:", err);

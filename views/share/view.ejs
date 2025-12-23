@@ -1,0 +1,14 @@
+<h1>Shared folder: <%= folder.name %></h1>
+<p>This link expires: <%= new Date(expiresAt).toLocaleString() %></p>
+
+<h2>Files</h2>
+
+<% if (files.length === 0) { %>
+<p>This folder is empty</p>
+<% } else { %>
+<ul>
+  <% files.forEach(file => { %>
+  <li><%= file.name %> (<%= (file.size / 1024).toFixed(2) %> KB)</li>
+  <% }); %>
+</ul>
+<% } %>
