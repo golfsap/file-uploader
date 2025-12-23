@@ -2,41 +2,63 @@
 
 <!-- Share section -->
 <div class="share-section">
-  <h2>Share this folder</h2>
-  <form action="" id="shareForm" style="margin-bottom: 15px">
-    <label for="duration">Link expires in:</label>
-    <select name="duration" id="duration" style="margin: 0 10px">
-      <option value="1">1 hour</option>
-      <option value="24">24 hours</option>
-      <option value="168">7 days</option>
-      <option value="720">30 days</option>
-    </select>
-    <button type="submit">Generate Link</button>
-  </form>
-
   <div
-    id="shareResult"
+    class="share-header"
+    onclick="toggleShareSection()"
     style="
-      display: none;
-      background: #f0f0f0;
-      padding: 10px;
-      border-radius: 3px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     "
   >
-    <p><strong>Share this link:</strong></p>
-    <div style="display: flex; gap: 10px; margin: 10px 0">
-      <input type="text" id="shareUrl" readonly style="flex: 1; padding: 5px" />
-      <button onclick="copyToClipboard()">Copy Link</button>
-    </div>
-    <p style="font-size: 0.9em; color: #666">
-      Expires: <span id="expiresAt"></span>
-    </p>
+    <h2>Share this folder</h2>
+    <span
+      id="shareArrow"
+      style="font-size: 1em; transition: transform 0.3s; display: inline-block"
+      >▼</span
+    >
   </div>
 
-  <!-- Active Share Links -->
-  <div id="activeShares" style="margin-top: 15px">
-    <h3>Active Share Links</h3>
-    <ul id="sharesList"></ul>
+  <div id="shareContent" style="display: none; margin-top: 15px">
+    <form action="" id="shareForm" style="margin-bottom: 15px">
+      <label for="duration">Link expires in:</label>
+      <select name="duration" id="duration" style="margin: 0 10px">
+        <option value="1">1 hour</option>
+        <option value="24">24 hours</option>
+        <option value="168">7 days</option>
+        <option value="720">30 days</option>
+      </select>
+      <button type="submit">Generate Link</button>
+    </form>
+    <div
+      id="shareResult"
+      style="
+        display: none;
+        background: #f0f0f0;
+        padding: 10px;
+        border-radius: 3px;
+      "
+    >
+      <p><strong>Share this link:</strong></p>
+      <div style="display: flex; gap: 10px; margin: 10px 0">
+        <input
+          type="text"
+          id="shareUrl"
+          readonly
+          style="flex: 1; padding: 5px"
+        />
+        <button onclick="copyToClipboard()">Copy Link</button>
+      </div>
+      <p style="font-size: 0.9em; color: #666">
+        Expires: <span id="expiresAt"></span>
+      </p>
+    </div>
+    <!-- Active Share Links -->
+    <div id="activeShares" style="margin-top: 15px">
+      <h3>Active Share Links</h3>
+      <ul id="sharesList"></ul>
+    </div>
   </div>
 </div>
 
@@ -70,8 +92,24 @@
 <script>
   const folderId = <%= folder.id %>;
 
+  // Toggle share section dropdown
+  function toggleShareSection() {
+    const content = document.getElementById('shareContent');
+    const arrow = document.getElementById('shareArrow');
+
+    if (content.style.display === 'none' || content.style.display === '') {
+      content.style.display = 'block';
+      arrow.classList.add('arrow-rotated');
+      // Load shares when opening
+      loadActiveShares();
+    } else {
+      content.style.display = 'none';
+      arrow.classList.remove('arrow-rotated');
+    }
+  }
+
   // Load active shared on page load
-  document.addEventListener('DOMContentLoaded', loadActiveShares);
+  // document.addEventListener('DOMContentLoaded', loadActiveShares);
 
   // Generate share link
   document.getElementById('shareForm').addEventListener('submit', async (e) => {
