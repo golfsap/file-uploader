@@ -176,3 +176,32 @@ exports.getShareLinks = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
+// Delete/revoke share link
+exports.revokeShareLink = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const share = await prisma.folderShare.findUnique({
+      where: { id: parseInt(id, 10) },
+      include: { folder: true },
+    });
+
+    if (!share) {
+      return res.status(404).json({ error: "Share link not found" });
+    }
+
+    if (share.folder.userId !== req.user.id) {
+      return res.status(403).json({ error: "Not authorized" });
+    }
+
+    await prisma.folderShare.delete({
+      where: { id: parseInt(id, 10) },
+    });
+
+    res.status(200).json({ success: true });
+  } catch (err) {
+    console.error("Error revoking share link:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};

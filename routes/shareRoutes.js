@@ -31,4 +31,10 @@ shareRouter.get(
   shareController.getShareLinks
 );
 
+/**
+ * -------------- DELETE ROUTES ----------------
+ */
+
+shareRouter.delete("/shares/:id", isAuth, shareController.revokeShareLink);
+
 module.exports = shareRouter;
