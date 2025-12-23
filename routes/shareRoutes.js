@@ -20,4 +20,9 @@ shareRouter.post(
 
 shareRouter.get("/shared/:token", shareController.viewSharedFolder);
 
+shareRouter.get(
+  "/shared/:token/files/:fileId/download",
+  shareController.downloadSharedFile
+);
+
 module.exports = shareRouter;

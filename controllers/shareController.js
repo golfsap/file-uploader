@@ -1,3 +1,4 @@
+const supabase = require("../config/supabase");
 const prisma = require("../db/client");
 const crypto = require("crypto");
 
@@ -90,9 +91,55 @@ exports.viewSharedFolder = async (req, res) => {
       folder: share.folder,
       files: share.folder.files,
       expiresAt: share.expiresAt,
+      token: token,
     });
   } catch (err) {
     console.error("Error viewing shared folder:", err);
+    res.status(500).send("Server error");
+  }
+};
+
+// Download file from shared folder (public access)
+exports.downloadSharedFile = async (req, res) => {
+  const { token, fileId } = req.params;
+
+  try {
+    const share = await prisma.folderShare.findUnique({
+      where: { token },
+      include: {
+        folder: {
+          include: {
+            files: {
+              where: {
+                id: parseInt(fileId, 10),
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!share || share.folder.files.length === 0) {
+      return res.status(404).send("File not found");
+    }
+
+    // Check if expired
+    if (new Date() > share.expiresAt) {
+      return res.status(410).send("This shared link has expired");
+    }
+
+    const file = share.folder.files[0];
+
+    // Create signed URL
+    const { data, error } = await supabase.storage
+      .from("files")
+      .createSignedUrl(file.path, 60);
+
+    if (error) throw error;
+
+    res.redirect(data.signedUrl);
+  } catch (err) {
+    console.error("Error downloading shared file:", err);
     res.status(500).send("Server error");
   }
 };

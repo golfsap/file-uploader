@@ -8,7 +8,11 @@
 <% } else { %>
 <ul>
   <% files.forEach(file => { %>
-  <li><%= file.name %> (<%= (file.size / 1024).toFixed(2) %> KB)</li>
+  <li>
+    <%= file.name %> (<%= (file.size / 1024).toFixed(2) %> KB)
+    <a href="/shared/<%= token %>/files/<%= file.id %>/download">Download</a>
+  </li>
+
   <% }); %>
 </ul>
 <% } %>
