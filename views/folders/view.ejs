@@ -68,6 +68,12 @@
 <a href="/folders">Back to all folders</a>
 
 <script>
+  const folderId = <%= folder.id %>;
+
+  // Load active shared on page load
+  document.addEventListener('DOMContentLoaded', loadActiveShares);
+
+  // Generate share link
   document.getElementById('shareForm').addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -106,5 +112,59 @@
       document.execCommand('copy');
       alert('Link copied to slipboard!');
     });
+  }
+
+  // Load active share links
+  async function loadActiveShares() {
+    try {
+      const response = await fetch(`/folders/${folderId}/shares`);
+      const data = await response.json();
+
+      const sharesList = document.getElementById('sharesList');
+
+      if (data.shares && data.shares.length > 0) {
+        sharesList.innerHTML = data.shares.map(share => `
+          <li style=" padding: 10px; background: #f9f9f9; border-radius: 3px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <code style="background: #fff; padding: 2px 5px; border-radius: 2px;">${window.location.origin}/shared/${share.token}</code>
+              <br>
+              <small style="color: #666;">Expires: ${new Date(share.expiresAt).toLocaleString()}</small>
+            </div>
+            <button onclick="revokeShare(${share.id})" style="background: #d9534f; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-left: 5px;"> Revoke </button>
+          </div>
+        </li>
+        `).join("");
+      } else {
+        sharesList.innerHTML = '<li style="color: #666;">No active share links </li>';
+      }
+    } catch (err) {
+      console.error('Error loading shares:', err);
+    }
+  }
+
+  // Revoke share link
+  async function revokeShare(shareId) {
+    if (!confirm('Are you sure you want to revoke this share link?')) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`/shares/${shareId}`, {
+        method: "DELETE",
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        alert('Share link revoked successfully');
+        loadActiveShares();
+      } else {
+        alert(data.error || 'Error revoking share link');
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      alert('Error revoking share link');
+    }
   }
 </script>

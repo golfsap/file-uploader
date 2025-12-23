@@ -25,4 +25,10 @@ shareRouter.get(
   shareController.downloadSharedFile
 );
 
+shareRouter.get(
+  "/folders/:folderId/shares",
+  isAuth,
+  shareController.getShareLinks
+);
+
 module.exports = shareRouter;

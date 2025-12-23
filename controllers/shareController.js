@@ -143,3 +143,36 @@ exports.downloadSharedFile = async (req, res) => {
     res.status(500).send("Server error");
   }
 };
+
+// List all share links for a folder
+exports.getShareLinks = async (req, res) => {
+  const folderId = parseInt(req.params.folderId, 10);
+
+  try {
+    const folder = await prisma.folder.findUnique({
+      where: { id: folderId },
+    });
+
+    if (!folder || folder.userId !== req.user.id) {
+      return res.status(403).render("error", {
+        title: "Error",
+        message: "Not authorized",
+      });
+    }
+
+    const shares = await prisma.folderShare.findMany({
+      where: {
+        folderId,
+        expiresAt: {
+          gt: new Date(), // Only active links
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    res.status(200).json({ shares });
+  } catch (err) {
+    console.error("Error fetching share links:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
